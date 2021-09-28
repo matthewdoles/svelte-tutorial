@@ -2,6 +2,9 @@
   import ContactCard from './ContactCard.svelte';
 
   export let name = 'Matthew';
+  export let title = '';
+  export let description = '';
+  export let image = '';
   export let age = 26;
 
   $: upperCaseName = name.toUpperCase();
@@ -31,8 +34,11 @@
 
 <input type="text" value={name} on:input={nameInput} /> -->
 <input type="text" bind:value={name} />
+<input type="text" bind:value={title} />
+<input type="text" bind:value={image} />
+<textarea rows="3" bind:value={description} />
 
-<ContactCard userName={name} />
+<ContactCard userName={name} jobTitle={title} userImage={image} {description} />
 
 <style>
   h1 {
