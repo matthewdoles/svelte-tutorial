@@ -9,7 +9,8 @@
       subtitle: 'Learn to code in 2 hours',
       description:
         'In this meetup, we will have some experts that teach you how to code',
-      imageURL: '',
+      imageURL:
+        'https://www.lighthouselabs.ca/uploads/post/open_graph_image/459/Coding-vs-programming.jpg',
       address: '27th Street Road, 32523 New York',
       contactEmail: 'code@test.com',
     },
@@ -18,7 +19,8 @@
       title: 'Swim Together',
       subtitle: "Let's go swimming",
       description: 'We will simply swim some laps',
-      imageURL: '',
+      imageURL:
+        'https://www.ymcarichmond.org/sites/default/files/2021-01/serena-repice-lentini-TVOAbbLL050-unsplash.jpg',
       address: '27th Street Road, 32523 New York',
       contactEmail: 'code@test.com',
     },
@@ -28,7 +30,14 @@
 <Header />
 <section id="meetups">
   {#each meetups as meetup}
-    <MeetupItem />
+    <MeetupItem
+      title={meetup.title}
+      subtitle={meetup.subtitle}
+      description={meetup.description}
+      imageUrl={meetup.imageURL}
+      address={meetup.description}
+      email={meetup.contactEmail}
+    />
   {/each}
 </section>
 
