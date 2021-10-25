@@ -2,6 +2,9 @@
   import Modal from './Modal.svelte';
   import Product from './Product.svelte';
 
+  let showModal = false;
+  let closable = false;
+
   let products = [
     {
       id: 'p1',
@@ -23,7 +26,20 @@
   <Product {...product} on:add-to-cart={addToCart} on:delete={deleteProduct} />
 {/each}
 
-<Modal>
-  <h1>Hello</h1>
-  <p>This works...</p>
-</Modal>
+<button on:click={() => (showModal = true)}>Show Modal</button>
+
+{#if showModal}
+  <Modal
+    on:cancel={() => (showModal = false)}
+    on:close={() => (showModal = false)}
+    let:didAgree={closeable}
+  >
+    <h1 slot="header">Hello</h1>
+    <p>This works...</p>
+    <button
+      slot="footer"
+      on:click={() => (showModal = false)}
+      disabled={!closeable}>Confirm</button
+    >
+  </Modal>
+{/if}
