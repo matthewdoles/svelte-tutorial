@@ -1,5 +1,4 @@
 <script>
-  import { check_outros } from 'svelte/internal';
   import CustomInput from './CustomInput.svelte';
   import Toggle from './Toggle.svelte';
 
@@ -8,13 +7,24 @@
   let selectedOption = 2;
   let agreed;
   let favColor = 'green';
+  let singleFavColor = 'red';
+  let usernameInput;
+  let someDiv;
 
   $: console.log(price);
   $: console.log(agreed);
   $: console.log(favColor);
+  $: console.log(singleFavColor);
 
   function setValue(event) {
     val = event.target.value;
+  }
+
+  function saveData() {
+    // console.log(document.querySelector('#username').value);
+    console.log(usernameInput.value);
+    console.log(usernameInput);
+    console.log(someDiv);
   }
 </script>
 
@@ -43,3 +53,16 @@
   <input type="radio" name="color" value="blue" bind:group={favColor} />
   Blue
 </label>
+
+<select bind:value={singleFavColor}>
+  <option value="green">Green</option>
+  <option value="red">Red</option>
+  <option value="blue">Blue</option>
+</select>
+
+<hr />
+
+<input type="text" id="username" bind:this={usernameInput} />
+<button on:click={saveData}>Save</button>
+
+<div bind:this={someDiv} />
