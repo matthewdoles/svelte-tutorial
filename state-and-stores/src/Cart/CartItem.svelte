@@ -1,21 +1,47 @@
 <script>
-  import Button from "../UI/Button.svelte";
+  import cartItems from './cart-store';
+  import { products } from '../Products/products-store';
+  import Button from '../UI/Button.svelte';
 
   export let title;
   export let price;
   export let id;
 
   let showDescription = false;
+  let description = 'Not available!';
+  // let fetchedProducts = [];
+
+  // products.subscribe((prods) => {
+  //   fetchedProducts = prods;
+  // });
 
   function displayDescription() {
     showDescription = !showDescription;
+    // description = fetchedProducts.find((p) => p.id === id).description;
+    const unsubscribe = products.subscribe((prods) => {
+      description = prods.find((p) => p.id === id).description;
+    });
+    unsubscribe();
   }
 
   function removeFromCart() {
-    // ...
-    console.log("Removing...");
+    cartItems.update((items) => {
+      return items.filter((i) => i.id !== id);
+    });
   }
 </script>
+
+<li>
+  <h1>{title}</h1>
+  <h2>{price}</h2>
+  <Button mode="outline" on:click={displayDescription}>
+    {showDescription ? 'Hide Description' : 'Show Description'}
+  </Button>
+  <Button on:click={removeFromCart}>Remove from Cart</Button>
+  {#if showDescription}
+    <p>{description}</p>
+  {/if}
+</li>
 
 <style>
   li {
@@ -37,15 +63,3 @@
     margin-bottom: 1rem;
   }
 </style>
-
-<li>
-  <h1>{title}</h1>
-  <h2>{price}</h2>
-  <Button mode="outline" on:click={displayDescription}>
-    {showDescription ? 'Hide Description' : 'Show Description'}
-  </Button>
-  <Button on:click={removeFromCart}>Remove from Cart</Button>
-  {#if showDescription}
-    <p>Not available :(</p>
-  {/if}
-</li>
