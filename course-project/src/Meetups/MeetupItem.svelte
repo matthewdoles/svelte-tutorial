@@ -38,7 +38,9 @@
     <p>{description}</p>
   </div>
   <footer>
-    <Button href={email}>Contact</Button>
+    <Button type="button" mode="outline" on:click={() => dispatch('edit', id)}
+      >Edit</Button
+    >
     <Button
       type="button"
       mode="outline"
