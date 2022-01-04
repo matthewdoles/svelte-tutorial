@@ -14,7 +14,7 @@
       address={meetup.description}
       email={meetup.contactEmail}
       isFav={meetup.isFavorite}
-      on:togglefavorite
+      on:showdetails
     />
   {/each}
 </section>
