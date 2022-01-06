@@ -4,6 +4,7 @@
   import { cubicIn } from 'svelte/easing';
   import Spring from './Spring.svelte';
   import { fade, fly, slide, scale } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
 
   const progress = tweened(0, {
     delay: 0,
@@ -19,31 +20,48 @@
   let boxInput;
 
   function addBox() {
-    boxes = [...boxes, boxInput.value];
+    boxes = [boxInput.value, ...boxes];
   }
   function discard(value) {
     boxes = boxes.filter((el) => el !== value);
   }
+
+  let showParagraph = false;
 </script>
 
 <!-- <progress value={$progress} /> -->
 <!-- <Spring /> -->
 
+<button on:click={() => (showParagraph = !showParagraph)}>Toggle</button>
+
+{#if showParagraph}
+  <p in:fade out:fly={{ x: 300 }}>Can you see me?</p>
+{/if}
+
+<hr />
+
 <input type="text" bind:this={boxInput} />
 <button on:click={addBox}>Add</button>
-{#each boxes as box (box)}
-  <div
-    transition:fly={{
-      delay: 0,
-      duration: 400,
-      opacity: 0,
-      x: 300,
-    }}
-    on:click={discard.bind(this, box)}
-  >
-    {box}
-  </div>
-{/each}
+{#if showParagraph}
+  {#each boxes as box (box)}
+    <div
+      transition:fly|local={{
+        delay: 0,
+        duration: 400,
+        opacity: 0,
+        x: 300,
+      }}
+      on:click={discard.bind(this, box)}
+      on:introstart={() => console.log('Adding the element starts.')}
+      on:introend={() => console.log('Adding the element ends.')}
+      on:outrostart={() => console.log('Removing the element starts.')}
+      on:outroend={() => console.log('Removing the element ends.')}
+      animate:flip={{ delay: 0, duration: 300 }}
+    >
+      {box}
+    </div>
+  {/each}
+{/if}
 
 <style>
   div {
