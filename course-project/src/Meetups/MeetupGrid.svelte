@@ -22,6 +22,9 @@
   <MeetupFilter on:select={setFilter} />
   <Button on:click={() => dispatch('add')}>New Meetup</Button>
 </section>
+{#if filteredMeetups.length === 0}
+  <p id="no-meetups">No Meetups, you may start adding some.</p>
+{/if}
 <section id="meetups">
   {#each filteredMeetups as meetup (meetup.id)}
     <div transition:scale animate:flip={{ duration: 300 }}>
@@ -47,6 +50,10 @@
     display: flex;
     justify-content: space-between;
   }
+  #no-meetups {
+    margin: 1rem;
+  }
+
   #meetups {
     width: 100%;
     display: grid;
