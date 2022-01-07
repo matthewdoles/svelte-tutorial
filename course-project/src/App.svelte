@@ -6,12 +6,14 @@
   import EditMeetup from './Meetups/EditMeetup.svelte';
   import MeetupDetail from './Meetups/MeetupDetail.svelte';
   import Spinner from './UI/Spinner.svelte';
+  import Error from './UI/Error.svelte';
 
   let editMode;
   let editedId;
   let page = 'overview';
   let pageData = {};
   let isLoading = true;
+  let error;
 
   fetch('https://svelte-course-doles-default-rtdb.firebaseio.com/meetups.json')
     .then((res) => {
@@ -27,13 +29,16 @@
       }
       setTimeout(() => {
         isLoading = false;
-        meetups.setMeetups(loadedMeetups);
+        meetups.setMeetups(loadedMeetups.reverse());
       }, 1000);
     })
     .catch((err) => {
+      error = err;
       console.log(err);
     })
-    .finally(() => {});
+    .finally(() => {
+      isLoading = false;
+    });
 
   function savedMeetup(event) {
     editMode = null;
@@ -59,9 +64,17 @@
     editMode = 'edit';
     editedId = event.detail;
   }
+
+  function clearError() {
+    error = null;
+  }
 </script>
 
 <Header />
+
+{#if error}
+  <Error message={error} on:cancel={clearError} />
+{/if}
 
 <main>
   {#if page === 'overview'}
@@ -86,8 +99,5 @@
 <style>
   main {
     margin-top: 5rem;
-  }
-  .meetup-controls {
-    margin: 1rem;
   }
 </style>
