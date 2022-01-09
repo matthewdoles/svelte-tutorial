@@ -1,31 +1,7 @@
-<script>
-  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-  import { scale } from 'svelte/transition';
-  import { flip } from 'svelte/animate';
-  import meetups from '../mettups-store';
-  import MeetupItem from '../components/Meetups/MeetupItem.svelte';
-  import MeetupFilter from '../components/Meetups/MeetupFilter.svelte';
-  import Button from '../components/UI/Button.svelte';
-  import EditMeetup from '../components/Meetups/EditMeetup.svelte';
-  import Spinner from '../components/UI/Spinner.svelte';
-
-  let fetchedMeetups = [];
-  let editMode;
-  let editedId;
-  let isLoading;
-  let favsOnly = false;
-  let unsubscribe;
-
-  $: filteredMeetups = favsOnly
-    ? fetchedMeetups.filter((m) => m.isFavorite)
-    : fetchedMeetups;
-
-  const dispatch = createEventDispatcher();
-
-  onMount(() => {
-    unsubscribe = meetups.subscribe((items) => (fetchedMeetups = items));
-    isLoading = true;
-    fetch(
+<script context="module">
+  export function preload(page) {
+    console.log(page);
+    return this.fetch(
       'https://svelte-course-doles-default-rtdb.firebaseio.com/meetups.json'
     )
       .then((res) => {
@@ -39,15 +15,46 @@
         for (const key in data) {
           loadedMeetups.push({ id: key, ...data[key] });
         }
-        meetups.setMeetups(loadedMeetups.reverse());
+        return { fetchedMeetups: loadedMeetups };
       })
       .catch((err) => {
         error = err;
         console.log(err);
-      })
-      .finally(() => {
-        isLoading = false;
+        this.error(500, 'Could note fetch meetups');
       });
+  }
+</script>
+
+<script>
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+  import { scale } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
+  import meetups from '../mettups-store';
+  import MeetupItem from '../components/Meetups/MeetupItem.svelte';
+  import MeetupFilter from '../components/Meetups/MeetupFilter.svelte';
+  import Button from '../components/UI/Button.svelte';
+  import EditMeetup from '../components/Meetups/EditMeetup.svelte';
+  import Spinner from '../components/UI/Spinner.svelte';
+
+  export let fetchedMeetups;
+  let loadedMeetups = [];
+  let editMode;
+  let editedId;
+  let isLoading;
+  let favsOnly = false;
+  let unsubscribe;
+
+  $: filteredMeetups = favsOnly
+    ? loadedMeetups.filter((m) => m.isFavorite)
+    : loadedMeetups;
+
+  const dispatch = createEventDispatcher();
+
+  onMount(() => {
+    unsubscribe = meetups.subscribe((items) => {
+      loadedMeetups = items;
+    });
+    meetups.setMeetups(fetchedMeetups);
   });
 
   onDestroy(() => {
@@ -70,9 +77,12 @@
   }
 
   function startEdit(event) {
-    console.log(event);
     editMode = 'edit';
     editedId = event.detail;
+  }
+
+  function startAdd(event) {
+    editMode = 'edit';
   }
 </script>
 
@@ -88,7 +98,7 @@
 {:else}
   <section id="meetup-controls">
     <MeetupFilter on:select={setFilter} />
-    <Button on:click={() => dispatch('add')}>New Meetup</Button>
+    <Button on:click={startAdd}>New Meetup</Button>
   </section>
   {#if filteredMeetups.length === 0}
     <p id="no-meetups">No Meetups, you may start adding some.</p>
