@@ -1,10 +1,8 @@
 <script>
-  import Nav from '../components/Nav.svelte';
-
-  export let segment;
+  import Header from '../components/UI/Header.svelte';
 </script>
 
-<Nav {segment} />
+<Header />
 
 <main>
   <slot />
@@ -12,11 +10,6 @@
 
 <style>
   main {
-    position: relative;
-    max-width: 56em;
-    background-color: white;
-    padding: 2em;
-    margin: 0 auto;
-    box-sizing: border-box;
+    margin-top: 5rem;
   }
 </style>
