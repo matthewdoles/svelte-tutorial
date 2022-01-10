@@ -11,11 +11,11 @@
         return res.json();
       })
       .then((data) => {
-        const loadedMeetups = [];
+        const fetchedMeetups = [];
         for (const key in data) {
-          loadedMeetups.push({ id: key, ...data[key] });
+          fetchedMeetups.push({ id: key, ...data[key] });
         }
-        return { fetchedMeetups: loadedMeetups.reverse() };
+        return { fetchedMeetups: fetchedMeetups.reverse() };
       })
       .catch((err) => {
         error = err;
@@ -37,7 +37,6 @@
   import Spinner from '../components/UI/Spinner.svelte';
 
   export let fetchedMeetups;
-  let loadedMeetups = [];
   let editMode;
   let editedId;
   let isLoading;
@@ -45,16 +44,16 @@
   let unsubscribe;
 
   $: filteredMeetups = favsOnly
-    ? loadedMeetups.filter((m) => m.isFavorite)
-    : loadedMeetups;
+    ? fetchedMeetups.filter((m) => m.isFavorite)
+    : fetchedMeetups;
 
   const dispatch = createEventDispatcher();
 
   onMount(() => {
-    unsubscribe = meetups.subscribe((items) => {
-      loadedMeetups = items;
-    });
     meetups.setMeetups(fetchedMeetups);
+    unsubscribe = meetups.subscribe((items) => {
+      fetchedMeetups = items;
+    });
   });
 
   onDestroy(() => {
